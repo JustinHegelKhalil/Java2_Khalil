@@ -3,24 +3,36 @@
     package="com.example.javatooappweekone"
     android:versionCode="1"
     android:versionName="1.0" >
+
     <uses-sdk
         android:minSdkVersion="18"
         android:targetSdkVersion="18" />
-	<uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/Meister" >
         <activity
             android:name="com.example.javatooappweekone.Layer_one"
-            android:label="@string/app_name" >
+            android:label="@string/app_title" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.javatooappweekone.ShowListViewActivity"
+            android:label="@string/title_activity_show_list_view"
+            android:parentActivityName="com.example.javatooappweekone.Layer_one" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.javatooappweekone.Layer_one" />
         </activity>
     </application>
 

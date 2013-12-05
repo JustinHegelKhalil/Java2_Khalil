@@ -11,12 +11,15 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.content.Context;
 
 public class Grabber {
 	
 	public String grabData(Context context, String searchTerm) {
+		searchTerm = searchTerm.replace(" ", "%20");
 		String returnString = "";
 		Thread one = new Thread();
 		one.start();
@@ -24,7 +27,8 @@ public class Grabber {
             try {
 				one.join(2000);
 				if (returnString.length() < 1) {
-					String url = "http://pipes.yahoo.com/pipes/pipe.run?_id=MjmAJWS13RGC6TDRpgt1Yg&_render=json&numberinput1=40&textinput1=" + searchTerm;
+					String url = "https://ajax.googleapis.com/ajax/services/feed/find?v=1.0&q=" + searchTerm;
+					// String url = "http://pipes.yahoo.com/pipes/pipe.run?_id=MjmAJWS13RGC6TDRpgt1Yg&_render=json&numberinput1=40&textinput1=" + searchTerm;
 					HttpClient httpClient = new DefaultHttpClient();
 					// sending data to destination for horoscope response.
 					HttpGet httpGet = new HttpGet(url); 
@@ -41,66 +45,20 @@ public class Grabber {
 							Filer fl = new Filer();
 							fl.writeToFile(context, result, "searchresults");
 							String finito = "";
-							/*
 							try {
-								// iterator++;
-								
-								
-								// System.out.println(result);
 								JSONObject json = new JSONObject(result);
-								JSONObject jso = json.getJSONObject("value");
-								JSONArray countOne = jso.getJSONArray("items");
-								JSONObject itemOne = countOne.getJSONObject(0);
-								String hosop = itemOne.getString("description");
-								finito = hosop;
-								String openP = "<p>";
-								String closeP = "</p>";
-								int skipHTS = finito.indexOf(openP);
-								int cutAt = finito.indexOf(closeP);
-								skipHTS = skipHTS + openP.length();
-								finito = finito.substring(skipHTS, cutAt);
-								// String js = jso.getString("title");
-								// System.out.println(result);
-								// System.out.println(hosop);
-								 
-							} catch (JSONException e) {
+								JSONObject jso = json.getJSONObject("responseData");
+								JSONArray countOne = jso.getJSONArray("entries");
+								// JSONObject jso = json.getJSONObject("value");
+								// JSONArray countOne = jso.getJSONArray("items");
+								fl.writeToFile(context, countOne.toString(), "arraycontents");
+							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							
-							// System.out.println(finito);
-							// find where it starts.
-							String finito = "";
-							String openP = "<p>";
-							String closeP = "</p>";
-							int skipHTS = finito.indexOf(openP);
-							int cutAt = finito.indexOf(closeP);
-							skipHTS = skipHTS + openP.length();
-							finito = finito.substring(skipHTS, cutAt);
-							int sp = result.indexOf("description");
-							// correct for length of marker
-							String begin = result.substring(sp + 15);
-							// System.out.println(result.substring(0, sp));
-							sp = begin.indexOf("description");
-							begin = begin.substring(sp + 17);
-							// do it again with the substring
-							int ep = begin.indexOf("p>");
-							*/
-							// String fin;
-							// System.out.println(result);
-							// fin = begin.substring(0, ep);
-							
-							
-						
-							
-							// make finished string.
-							// System.out.println(fin);
-							// returnString = begin;
-							// returnString = fin;
 							returnString = finito;
 						}
 					}
-					
 				}
 			} catch (ClientProtocolException e) {
 				

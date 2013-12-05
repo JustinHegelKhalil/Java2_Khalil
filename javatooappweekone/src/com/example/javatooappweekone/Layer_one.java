@@ -5,30 +5,41 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.example.methodical.Filer;
 import com.example.methodical.Grabber;
 
 public class Layer_one extends Activity {
-
+	public final static String PUBLIC_KEY = "KEYFORSEARCH";
+	EditText et;
+	Button sendButton;
 	TextView tv;
 	Filer fl;
 	String obj;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fl = new Filer();
+        sendButton = new Button(this);
         LinearLayout ll = new LinearLayout(this);
+        ll.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        ll.setOrientation(LinearLayout.VERTICAL);
+        ll.setLayoutParams(llp);
+        sendButton.setText(R.string.send_button_text);
+        
         String newstring = fl.readFromFile(getApplicationContext(), "saveddata");
-        System.out.println(newstring);
         tv = new TextView(this);
-        tv.setText("text");
         
         String searchbj = fl.readFromFile(getApplicationContext(), "searchresults");
         System.out.println(searchbj);
@@ -47,50 +58,60 @@ public class Layer_one extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
-        String these = fl.readFromFile(getApplicationContext(), "saveddata");
-        
-        // tv.setText(these);
         if (newstring.length() > 0){
-        	// tv.setText(newstring);
-           //  
+        	tv.setText(newstring);
+        } else {
+        	tv.setText("unused");
         }
-		// testline for startup
-        // 
-        Button save = new Button(this);
-        ll.addView(save);
+		Button save = new Button(this);
+		ll.addView(save);
         ll.addView(tv);
-        String get = fl.readFromFile(getApplicationContext(), "saveddata");
+        et = new EditText(this);
+        ll.addView(et);
+        ll.addView(sendButton);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+    		
+			@Override
+			public void onClick(View arg0) {
+				fl = new Filer();
+				fl.writeToFile(getApplicationContext(), "previously run", "saveddata");
+				new Thread(new Runnable() { 
+		              public void run(){
+		            	  String st = et.getText().toString();
+		            	  System.out.println(st);
+		            	  Grabber gr = new Grabber();
+		            	  obj = gr.grabData(getApplicationContext(), st);
+		            	  System.out.println(obj);
+		            	  runOnUiThread(new Runnable() {
+		            		  public void run() {
+		            			  openSecondView(getCurrentFocus());
+		            		  
+		            		  }
+		            	  });
+		              }}).start();
+				}
+		});
         
         save.setOnClickListener(new View.OnClickListener() {
 		
 			@Override
 			public void onClick(View arg0) {
 				fl = new Filer();
-				fl.writeToFile(getApplicationContext(), "Bunch of crap for testing", "saveddata");
+				fl.writeToFile(getApplicationContext(), "previously run", "saveddata");
 				new Thread(new Runnable() { 
 		              public void run(){
 		            	  Grabber gr = new Grabber();
 		            	  obj = gr.grabData(getApplicationContext(), "interview");
 		            	  runOnUiThread(new Runnable() {
 		            		  public void run() {
-		            			 
-		            			  }
+		            			  
+		            		  }
 		            	  });
 		              }}).start();
-				
-				
-					
-				// tv.setText(obj);	
-			}
-			
+				}
 		});
-        ////////
-
+        
         setContentView(ll);
-        
-        
-        
         
     }
 
@@ -106,15 +127,22 @@ public class Layer_one extends Activity {
             public void run(){
           	  runOnUiThread(new Runnable() {
           		  public void run() {
-          			  // requestor rq = new requestor();
-          			  // String newstring = rq.horoscope(getApplicationContext(), "aries");
-          			  // TextView tv = (TextView)findViewById(R.id.testingtext);
-          			  // tv.setText(newstring);
+          			// ultra temporary usage to eliminate warning
+          			openListView("fkjhfs");
+          			// to be deleted...
           			  
-       
-
           		  }
           	  });
             }}).start();
+    }
+    public void openSecondView(View view) {
+        // open second activity
+    	Intent intent = new Intent(this, ShowListViewActivity.class);
+    	String st = et.getText().toString();
+    	intent.putExtra(PUBLIC_KEY, st);
+        startActivity(intent);
+    }
+    private void openListView(String searchTerm){
+    	
     }
 }

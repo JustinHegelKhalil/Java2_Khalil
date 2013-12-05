@@ -1,6 +1,7 @@
 package com.example.methodical;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +14,12 @@ import android.util.Log;
 
 public class Filer {
 
+	public void deleteFile(Context context, String filename) {
+		File dir = context.getFilesDir();
+		File file = new File(dir, filename);
+		file.delete();
+	}
+	
 	public void writeToFile(Context context, String data, String filename) {
 	    try {
 	        OutputStreamWriter osw = new OutputStreamWriter(context.openFileOutput(filename, Context.MODE_PRIVATE));
