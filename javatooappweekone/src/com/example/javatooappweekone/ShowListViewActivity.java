@@ -18,12 +18,13 @@ import android.text.Spanned;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+// import android.view.View;
+// import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-// import android.widget.TextView;
 
 import com.example.methodical.Filer;
+// import android.widget.TextView;
 
 public class ShowListViewActivity extends Activity {
 
@@ -37,8 +38,8 @@ public class ShowListViewActivity extends Activity {
 		setupActionBar();
 		
 		lv = (ListView)findViewById(R.id.listId);
-		View listHeader = this.getLayoutInflater().inflate(R.layout.list_header, null);
-		lv.addHeaderView(listHeader);
+		// View listHeader = this.getLayoutInflater().inflate(R.layout.list_header, null);
+		// lv.addHeaderView(listHeader);
 		populateList();
 	}
 
@@ -114,6 +115,7 @@ public class ShowListViewActivity extends Activity {
 			}
 			SimpleAdapter sa = new SimpleAdapter(this, myList, R.layout.list_row, new String[] { "title", "contentSnippet", "url"}, new int[] { R.id.titleText, R.id.contentSnippetText, R.id.urlText});
 			lv.setAdapter(sa);
+			
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

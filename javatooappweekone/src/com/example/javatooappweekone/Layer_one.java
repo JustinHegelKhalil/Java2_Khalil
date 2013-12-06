@@ -7,6 +7,10 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -42,7 +46,7 @@ public class Layer_one extends Activity {
         tv = new TextView(this);
         
         String searchbj = fl.readFromFile(getApplicationContext(), "searchresults");
-        System.out.println(searchbj);
+        // System.out.println(searchbj);
         try {
 			JSONObject json = new JSONObject(searchbj);
 			JSONObject jso = json.getJSONObject("value");
@@ -52,7 +56,7 @@ public class Layer_one extends Activity {
 				JSONObject currentObject = resultsArray.getJSONObject(i);
 				String title = currentObject.getString("title");
 				tv.setText(title);
-				System.out.println(title);
+				// System.out.println(title);
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -69,6 +73,7 @@ public class Layer_one extends Activity {
         et = new EditText(this);
         ll.addView(et);
         ll.addView(sendButton);
+        openListView("term");
         sendButton.setOnClickListener(new View.OnClickListener() {
     		
 			@Override
@@ -77,14 +82,19 @@ public class Layer_one extends Activity {
 				fl.writeToFile(getApplicationContext(), "previously run", "saveddata");
 				new Thread(new Runnable() { 
 		              public void run(){
-		            	  String st = et.getText().toString();
-		            	  System.out.println(st);
-		            	  Grabber gr = new Grabber();
-		            	  obj = gr.grabData(getApplicationContext(), st);
-		            	  System.out.println(obj);
+		            	  // String st = et.getText().toString();
+		            	  // openListView(st);
+		            	  // System.out.println(st);
+		            	  // Grabber gr = new Grabber();
+		            	  // obj = gr.grabData(getApplicationContext(), st);
+		            	  // System.out.println(obj);
 		            	  runOnUiThread(new Runnable() {
 		            		  public void run() {
-		            			  openSecondView(getCurrentFocus());
+		            			  System.out.println("starting thing");
+		            			  String st = et.getText().toString();
+		            			  // System.out.println(st);
+				            	  openListView(st);
+		            			  // openSecondView(getCurrentFocus());
 		            		  
 		            		  }
 		            	  });
@@ -143,6 +153,35 @@ public class Layer_one extends Activity {
         startActivity(intent);
     }
     private void openListView(String searchTerm){
+    	Handler pr = new Handler() {
+    		
+    		@Override
+			public void handleMessage(Message msg) {
+				System.out.println("message handling");
+				String response = null;
+				
+				if (msg.arg1 == RESULT_OK && msg.obj != null) {
+					try {
+						response = (String) msg.obj;
+						System.out.println(response);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						Log.e("", e.getMessage().toString());
+						e.printStackTrace();
+					}
+				}
+				// TODO Auto-generated method stub
+				super.handleMessage(msg);
+			}
+    		
+    	};
+    	
+    	Messenger messageGetter = new Messenger(pr);
+    	Intent getResultsIntent = new Intent(this, Preppie.class);
+    	getResultsIntent.putExtra(Preppie.MESSENGER_KEY, messageGetter);
+    	getResultsIntent.putExtra(Preppie.MESSAGE_SEARCH, this.et.getText().toString());
+    	startService(getResultsIntent);
+    	tv.setText("getting results");
     	
     }
 }
