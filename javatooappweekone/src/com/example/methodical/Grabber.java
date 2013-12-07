@@ -1,5 +1,6 @@
 package com.example.methodical;
-
+//Justin Khalil formerly of OCD, latterly of FSU
+//Java-II Week One
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,11 +16,17 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.text.Html;
+import android.text.Spanned;
 
 public class Grabber {
 	
 	public String grabData(Context context, String searchTerm) {
+		Spanned sp = Html.fromHtml(searchTerm);
+		searchTerm = sp.toString();
 		searchTerm = searchTerm.replace(" ", "%20");
+		searchTerm = searchTerm.replaceAll("\"", "");
+		// resolving a bunch of problems with string formatting.
 		String returnString = "";
 		Thread one = new Thread();
 		one.start();
@@ -27,10 +34,15 @@ public class Grabber {
             try {
 				one.join(2000);
 				if (returnString.length() < 1) {
-					String url = "https://ajax.googleapis.com/ajax/services/feed/find?v=1.0&q=" + searchTerm;
-					// String url = "http://pipes.yahoo.com/pipes/pipe.run?_id=MjmAJWS13RGC6TDRpgt1Yg&_render=json&numberinput1=40&textinput1=" + searchTerm;
+					// construct url from components.
+					// superfluous elements retained for future embellishments.
+					String urlP1 = "http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=";
+					String urlP2 = "9q98mr6xrq5j9hz99ms9kecv";
+					String urlP3 = "&q=";
+					searchTerm = searchTerm.replace(" ", "+");
+					String urlP5 = "&page_limit=20";
+					String url = urlP1 + urlP2 + urlP3 + searchTerm + urlP5;
 					HttpClient httpClient = new DefaultHttpClient();
-					// sending data to destination for horoscope response.
 					HttpGet httpGet = new HttpGet(url); 
 					httpGet.setHeader("Content-type", "application/json");
 					HttpResponse response;
@@ -47,8 +59,9 @@ public class Grabber {
 							String finito = "";
 							try {
 								JSONObject json = new JSONObject(result);
-								JSONObject jso = json.getJSONObject("responseData");
-								JSONArray countOne = jso.getJSONArray("entries");
+								// vestigial elements from earlier versions.
+								//JSONObject jso = json.getJSONObject("responseData");
+								JSONArray countOne = json.getJSONArray("movies");
 								// JSONObject jso = json.getJSONObject("value");
 								// JSONArray countOne = jso.getJSONArray("items");
 								fl.writeToFile(context, countOne.toString(), "arraycontents");
@@ -82,9 +95,7 @@ public class Grabber {
 	
 		try {
 			one.join();
-			if (returnString.length() < 2){
-				
-			}
+			
 			return returnString;
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block

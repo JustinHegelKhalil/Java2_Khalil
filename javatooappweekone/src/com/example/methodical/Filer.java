@@ -1,5 +1,6 @@
 package com.example.methodical;
-
+// Justin Khalil formerly of OCD, latterly of FSU
+// Java-II Week One
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,11 +11,12 @@ import java.io.OutputStreamWriter;
 
 import android.content.Context;
 import android.util.Log;
-// import android.util.Log;
 
 public class Filer {
 
 	public void deleteFile(Context context, String filename) {
+		// pretty sure I'm not using this method right now, but it's good to have one of these lying around just in case I 
+		// decide to clear the proverbial slate.
 		File dir = context.getFilesDir();
 		File file = new File(dir, filename);
 		file.delete();
@@ -47,7 +49,8 @@ public class Filer {
 	            String receiveString = "";
 	            StringBuilder stringBuilder = new StringBuilder();
 
-	            while ( (receiveString = bufferedReader.readLine()) != null ) {
+	            while ((receiveString = bufferedReader.readLine()) != null) {
+	            	// dump string contents into stringbuilder.
 	                stringBuilder.append(receiveString);
 	            }
 
@@ -56,9 +59,9 @@ public class Filer {
 	        }
 	    }
 	    catch (FileNotFoundException e) {
-	        Log.e("login activity", "File not found: " + e.toString());
+	        Log.e("login activity", "Not found: " + e.toString());
 	    } catch (IOException e) {
-	        Log.e("login activity", "Can not read file: " + e.toString());
+	        Log.e("login activity", "Can't read file: " + e.toString());
 	    }
 
 	    return returner;

@@ -3,10 +3,10 @@
 
     <string name="app_name">javatooappweekone</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="app_title">Bookmeister</string>
+    <string name="hello_world">greetings from planet erf!</string>
+    <string name="app_title">MovieMeister</string>
     <string name="search_prompt">enter search text</string>
     <string name="send_button_text">search</string>
     <string name="title_activity_show_list_view">ShowListViewActivity</string>
-
+	<string name="loading">loading</string>
 </resources>
