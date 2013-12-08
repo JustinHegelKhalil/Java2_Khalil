@@ -30,6 +30,7 @@ public class Grabber {
 		String returnString = "";
 		Thread one = new Thread();
 		one.start();
+		
 		while (one.isAlive()) {
             try {
 				one.join(2000);

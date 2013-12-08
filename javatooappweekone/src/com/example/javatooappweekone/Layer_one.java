@@ -10,12 +10,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -24,28 +29,30 @@ import android.widget.TextView;
 
 import com.example.methodical.Filer;
 import com.example.methodical.Grabber;
+import com.example.methodical.SpecHandler;
 
-public class Layer_one extends Activity {
+public class Layer_one extends Activity implements OnClickListener {
 	public final static String PUBLIC_KEY = "KEYFORSEARCH";
 	public final static String MY_LIST = "LISTKEY";
 	EditText et;
-	Button sendButton;
 	TextView tv;
 	Filer fl;
 	String obj;
 	ListView lv;
 	Handler AHandler;
 	String searchString;
-	ArrayList<HashMap<String, String>> thisList;
+	static ArrayList<HashMap<String, String>> thisList;
 	boolean savedInstance;
 	Bundle state;
+	SpecHandler sh;
+	String searchResults;
+	private Button sendButton;
 	
-     private Runnable doListThing = new Runnable() {
-         public void run() {
-        	 savedInstance = false;
-             populateList();
-         }
-      };
+	
+	
+	
+	
+	
 	
     // There's a variable definition a few lines down that Eclipse doesn't like.
     // Research says that there's no solid way around it other than suppressing it, so that's what I do here.
@@ -56,9 +63,12 @@ public class Layer_one extends Activity {
     	setContentView(R.layout.activity_layer_one);
     	super.onCreate(savedInstanceState);
     	
+    	sendButton = (Button)findViewById(R.id.sendButton);
+    	sendButton.setOnClickListener(this);
+    	
+    	
     	if (savedInstanceState != null){
 
-    		savedInstance = true;
     		thisList = (ArrayList<HashMap<String, String>>) savedInstanceState.getSerializable(MY_LIST);
     		searchString = (String) savedInstanceState.getString(PUBLIC_KEY);
     		et = (EditText) findViewById(R.id.textField);
@@ -66,94 +76,25 @@ public class Layer_one extends Activity {
     		// that's just weird.
     		
     		sendButton = (Button)findViewById(R.id.sendButton);
-    		
     		populateList();
-    		AHandler = new Handler();
-        	fl = new Filer();
-    		sendButton.setOnClickListener(new View.OnClickListener() {
-        		
-    			@Override
-    			public void onClick(View arg0) {
-    				sendButton = (Button)findViewById(R.id.sendButton);
-    				sendButton.setText(R.string.loading);
-    				fl = new Filer();
-    				fl.writeToFile(getApplicationContext(), "previously run", "saveddata");
-    				new Thread(new Runnable() { 
-    		              public void run(){
-    		            	  String st = et.getText().toString();
-    		            	  Grabber gr = new Grabber();
-    		            	  obj = gr.grabData(getApplicationContext(), st);
-    		            	  System.out.println(obj);
-    		            	  runOnUiThread(new Runnable() {
-    		            		  public void run() {
-    		            			  // start handler's runnable for adding elements to listview
-    		            			  
-    		            			  AHandler.post(doListThing);
-    		            		  }
-    		            	  });
-    		              }}).start();
-    				}
-    		});
-    		
-    	} else {
-    		AHandler = new Handler();
+        } else {
         	fl = new Filer();
         	// get string containing saveddata file contents.
             // if there are contents, it means the app has been run before.
         	String newstring = fl.readFromFile(getApplicationContext(), "saveddata");
+        	
         	if (newstring.length() > 1){
+        		
         		populateList();
         	}
         	
-        	String searchbj = fl.readFromFile(getApplicationContext(), "searchresults");
-            try {
-    			JSONObject json = new JSONObject(searchbj);
-    			JSONObject jso = json.getJSONObject("value");
-    			JSONArray resultsArray = jso.getJSONArray("items");
-    			int i;
-    			for (i = 0; i <= resultsArray.length(); i++){
-    				JSONObject currentObject = resultsArray.getJSONObject(i);
-    				String title = currentObject.getString("title");
-    				tv.setText(title);
-    			}
-    		} catch (JSONException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-            
-            et = (EditText)findViewById(R.id.textField);
-            sendButton = (Button)findViewById(R.id.sendButton);
-            sendButton.setOnClickListener(new View.OnClickListener() {
-        		
-    			@Override
-    			public void onClick(View arg0) {
-    				sendButton = (Button)findViewById(R.id.sendButton);
-    				sendButton.setText(R.string.loading);
-    				fl = new Filer();
-    				fl.writeToFile(getApplicationContext(), "previously run", "saveddata");
-    				new Thread(new Runnable() { 
-    		              public void run(){
-    		            	  String st = et.getText().toString();
-    		            	  Grabber gr = new Grabber();
-    		            	  obj = gr.grabData(getApplicationContext(), st);
-    		            	  System.out.println(obj);
-    		            	  runOnUiThread(new Runnable() {
-    		            		  public void run() {
-    		            			  
-    		            			  // start handler's runnable for adding elements to listview
-    		            			  AHandler.post(doListThing);
-    		            			  
-    		            		  }
-    		            	  });
-    		              }}).start();
-    				}
-    		});
-            // activatable lines to delete files for testing purposes.
+        	// activatable lines to delete files for testing purposes.
             // fl.deleteFile(getApplicationContext(), "saveddata");
             // fl.deleteFile(getApplicationContext(), "searchresults");
             // fl.deleteFile(getApplicationContext(), "arraycontents");
     	}
     }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -172,13 +113,10 @@ public class Layer_one extends Activity {
     
     public void populateList(){
     	
-		Filer fl = new Filer();
-		String jsonResults = fl.readFromFile(getApplicationContext(), "searchresults");
-		// System.out.println(jsonResults);
-		
+    	
+    	
 		ArrayList<HashMap<String, String>> myList = new ArrayList<HashMap<String, String>>();
-		System.out.println("checking if savedInstance == true");
-		System.out.println("savedInstance == true");
+		
 		if (thisList != null && !thisList.isEmpty()){
 			myList = thisList;
 			lv = (ListView)findViewById(R.id.listId1);
@@ -187,8 +125,12 @@ public class Layer_one extends Activity {
 			lv.setAdapter(sa);
 				
 		} else {
-			System.out.println("savedInstance == false");
 			try {
+				Filer fl = new Filer();
+				String jsonResults = fl.readFromFile(getApplicationContext(), "searchresults");
+				// System.out.println(jsonResults);
+		    	
+				
 				// create object from JSON string
 				// break it down into individual items.
 				JSONObject jsobject = new JSONObject(jsonResults);
@@ -253,8 +195,21 @@ public class Layer_one extends Activity {
 		
 	sendButton = (Button)findViewById(R.id.sendButton);
 	sendButton.setText(R.string.search_prompt);
-	savedInstance = false;
 	}
+    
+    
+    private void buildList(){
+    	lv = (ListView)findViewById(R.id.listId1);
+		// construct hashmap for returns.
+		SimpleAdapter sa = new SimpleAdapter(this, thisList, R.layout.list_row, new String[] { "title", "synopsis", "year"}, new int[] { R.id.titleText, R.id.synopsisText, R.id.yearText});
+		lv.setAdapter(sa);
+		sendButton = (Button)findViewById(R.id.sendButton);
+		sendButton.setText(R.string.search_prompt);
+		
+		
+	}
+    
+    
     @Override
     protected void onSaveInstanceState(Bundle outState){
     	
@@ -271,10 +226,154 @@ public class Layer_one extends Activity {
     	super.onRestoreInstanceState(savedInstanceState);
     }
 
+    static public void setContent(ArrayList<HashMap<String, String>> contentList){
+    	thisList = contentList;
+    	System.out.println("thislist updated");
+    }
+    
+    @Override
+	public void onClick(View arg0) {
+		sendButton = (Button)findViewById(R.id.sendButton);
+		sendButton.setText(R.string.loading);
+		
+		fl = new Filer();
+		fl.writeToFile(getApplicationContext(), "previously run", "saveddata");
+		
+		
+		
+		populateList();
+		
+		
+		
+		
+		new Thread(new Runnable() { 
+            public void run(){
+            	//et = (EditText)findViewById(R.id.textField);
+          	  	//String st = et.getText().toString();
+          	  	//Grabber gr = new Grabber();
+          	  	//obj = gr.grabData(getApplicationContext(), st);
+           }
+        }).start();
+		
+		
+		
+		sh = new SpecHandler(){
+			
+    		@SuppressWarnings("unchecked")
+			@Override
+    		public void handleMessage(Message msg){
+    			ArrayList<HashMap<String, String>> response = null;
+    			if (msg.arg1 == RESULT_OK && msg.obj != null){
+    				
+    				try {
+    					response = (ArrayList<HashMap<String, String>>) msg.obj;
+    					thisList = response;
+    					System.out.println("list refreshing");
+    					// populateList();
+    				} catch (Exception e) {
+    					System.out.println("list not refreshing");
+    					// TODO Auto-generated catch block
+    					e.printStackTrace();
+    				}
+    				
+    				// setContent(response);
+    				
+    			}
+    			
+    		
+    		}
+    	};
+    	
+		
+		
+		Messenger cycleMessenger = new Messenger(sh);
+		Intent cycleIntent = new Intent(this, CycleService.class);
+		cycleIntent.putExtra(CycleService.RESULT_COOL, cycleMessenger);
+		startService(cycleIntent);
+		
+		// populateList();
+		
+		// sh.post(setLoadingText);
+		// sh.post(doListThing);
+		// sh.post(setSearchText);
+		new LoadTask().execute();
+		}
 
 
-
-
-
+    public class LoadTask extends AsyncTask<Void, Void, Void> {
+       // oh wow, I cannot believe how convoluted this all got. 
+    	
+       
+       @Override
+       protected Void doInBackground(Void...arg0){
+    	   et = (EditText)findViewById(R.id.textField);
+    	   String st = et.getText().toString();
+    	   Grabber gr = new Grabber();
+    	   obj = gr.grabData(getApplicationContext(), st);
+    	   return null;
+       }
+       @Override
+       protected void onPostExecute(Void result){
+    	   try {
+    		   ArrayList<HashMap<String, String>> myList = new ArrayList<HashMap<String, String>>();
+				Filer fl = new Filer();
+				String jsonResults = fl.readFromFile(getApplicationContext(), "searchresults");
+				// System.out.println(jsonResults);
+		    	
+				
+				// create object from JSON string
+				// break it down into individual items.
+				JSONObject jsobject = new JSONObject(jsonResults);
+				// Log.e("json", "first object done");
+				JSONArray jso = jsobject.getJSONArray("movies");
+				// alternate parsing code here.
+				// JSONObject jso = jsobject.getJSONObject("responseData");
+				// Log.e("json", "second object done");
+				// JSONArray arrayObject = jso.getJSONArray("entries");
+				// Log.e("json", "third object done");
+				int arraySize = jso.length();
+				// TextView tv = (TextView)findViewById(R.id.textable);
+				// tv.setText(String.valueOf(arraySize));
+				int i;
+				// iterate through JSON array, adding strings to hashmap
+				for (i = 0; i < arraySize; i++){
+					JSONObject current = jso.getJSONObject(i);
+					String title = current.getString("title");
+					title = "Title: " + title;
+					Spanned convert = Html.fromHtml(title);
+					String contentSnip = current.getString("synopsis");
+					Spanned convertCon = Html.fromHtml(contentSnip);
+						
+					String url = current.getString("year");
+					url = "year:" + url + " ";
+					// some returned items lack certain elements. 
+					// so I check for items that are not in every return
+					if (current.has("critics_consensus")){
+						url = current.getString("critics_consensus");
+					}
+					if (current.has("release_dates")){
+						JSONObject rd = current.getJSONObject("release_dates");
+						if (rd.has("theater")){
+							// if there is a listed theatrical release date, put that into the returned listview
+							url = url + "\n" + "released: " + rd.getString("theater");
+							// I'm really getting tired of the incredibly small variable names.
+							// rd, pl, osw, pl, rl, it's just bizarrely cryptic.
+						}
+					}
+					HashMap<String, String> stuffMap = new HashMap<String, String>();
+					stuffMap.put("title", convert.toString());
+					stuffMap.put("synopsis", convertCon.toString());
+					stuffMap.put("year", url);
+					myList.add(stuffMap);
+				}
+				thisList = myList;
+					
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	   buildList();
+       }
+    }
 
 }
