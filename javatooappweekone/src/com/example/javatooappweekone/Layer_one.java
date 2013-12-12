@@ -10,7 +10,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,9 +30,11 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.example.methodical.ContentProviderThing;
 import com.example.methodical.Filer;
 import com.example.methodical.Grabber;
 import com.example.methodical.SpecHandler;
+// import android.database.MatrixCursor;
 
 public class Layer_one extends Activity implements OnClickListener {
 	public final static String PUBLIC_KEY = "KEYFORSEARCH";
@@ -65,8 +70,54 @@ public class Layer_one extends Activity implements OnClickListener {
     	
     	sendButton = (Button)findViewById(R.id.sendButton);
     	sendButton.setOnClickListener(this);
-    	
-    	
+    	et = (EditText) findViewById(R.id.textField);
+		// okay, it seems that somehow android remembers the contents of an EditText field on restoreInstanceState.
+		// that's just weird.
+		// et.setText(ContentProviderThing.DisplayData.CONTENT_URI.toString());
+		ContentResolver cr = getContentResolver();
+		
+		
+		// Uri path = new Uri.Builder().scheme( ContentResolver.SCHEME_CONTENT ).authority(ContentProviderThing.AUTHORITY ).appendPath( "items/" ).build();
+		Cursor cur = cr.query(ContentProviderThing.DisplayData.CONTENT_URI, ContentProviderThing.DisplayData.PROJECTION, null, null, null);
+		// Cursor cur = cr.query(path, ContentProviderThing.DisplayData.PROJECTION, null, null, null);
+		// System.out.println(ContentProviderThing.DisplayData.CONTENT_TYPE);
+		// System.out.println(ContentProviderThing.DisplayData.CONTENT_URI);
+		// Uri nowURI = ContentProviderThing.DisplayData.CONTENT_URI;
+		
+		// Uri uri = Uri.withAppendedPath(ContentProviderThing.DisplayData.CONTENT_URI, ContentProviderThing.DisplayData.TITLE_COLUMN);
+				
+				// h(ContentProviderThing.DisplayData.CONTENT_URI, ContentProviderThing.ITEMS);
+		
+		// String uriString = "content://com.example.methodical.contentproviderthing/items/1";
+		// Uri uriStringInUriForm = Uri.parse(uriString);
+		Uri uriNew = Uri.parse(ContentProviderThing.DisplayData.CONTENT_URI +"/items/");
+		System.out.println(uriNew.toString());
+		// Cursor cur = cr.query(uriNew, ContentProviderThing.DisplayData.PROJECTION, null, null, null);
+		// Cursor cur = cr.query(ContentProviderThing.DisplayData.CONTENT_URI, ContentProviderThing.DisplayData.PROJECTION, null, null, null);
+		// cur.moveToFirst();
+		// String outputString = cur.getColumnName(0);
+		String[] outputString = cur.getColumnNames();
+		int quant = cur.getCount();
+		System.out.println("# of rows: " + quant);
+		// String secondOutput = cur.getString(cur.getColumnIndex("title"));
+		// System.out.println(secondOutput);
+		System.out.println(outputString[0] + outputString[1] + outputString[2] + outputString[3]);
+		// Cursor cur = cr.query(uri, ContentProviderThing.DisplayData.PROJECTION, null, null, null);
+		// 
+		// String output = cur.getString(1);
+		// System.out.println(output);
+		
+		// String data = cur.getString(cur.getCount());
+		System.out.println(cur.getColumnCount());
+		// cur.moveToPosition(1);
+		if (cur.moveToFirst()) {
+			String text = cur.getInt(0) + " " + cur.getString(1);
+			System.out.println(text);
+		}
+		// String text = cur.getInt(0)
+		// System.out.println(cur.getString(0));
+	    //Cursor c = managedQuery(ContentProviderThing.ITEMS_ID, null, null, null, "name");
+		
     	if (savedInstanceState != null){
 
     		thisList = (ArrayList<HashMap<String, String>>) savedInstanceState.getSerializable(MY_LIST);
@@ -74,6 +125,7 @@ public class Layer_one extends Activity implements OnClickListener {
     		et = (EditText) findViewById(R.id.textField);
     		// okay, it seems that somehow android remembers the contents of an EditText field on restoreInstanceState.
     		// that's just weird.
+    		
     		
     		sendButton = (Button)findViewById(R.id.sendButton);
     		populateList();
@@ -314,13 +366,32 @@ public class Layer_one extends Activity implements OnClickListener {
        }
        @Override
        protected void onPostExecute(Void result){
-    	   try {
-    		   ArrayList<HashMap<String, String>> myList = new ArrayList<HashMap<String, String>>();
-				Filer fl = new Filer();
-				String jsonResults = fl.readFromFile(getApplicationContext(), "searchresults");
-				// System.out.println(jsonResults);
-		    	
+    	   // try {
+    		   
+    		   // ArrayList<HashMap<String, String>> myList = new ArrayList<HashMap<String, String>>();
+    		   ArrayList<HashMap<String, String>> myListToo = new ArrayList<HashMap<String, String>>();
+    		   // Filer fl = new Filer();
+    		   // String jsonResults = fl.readFromFile(getApplicationContext(), "searchresults");
+    		   // System.out.println(jsonResults);
 				
+    		   ContentResolver cr = getContentResolver();
+    		   Cursor cur = cr.query(ContentProviderThing.DisplayData.CONTENT_URI, ContentProviderThing.DisplayData.PROJECTION, null, null, null);
+    		   int quant = cur.getCount();
+    		   int x = 0;
+    		   for (x = 0; x < quant; x++){
+    			   String title = cur.getInt(x) + " " + cur.getString(1);
+    			   String synop = cur.getInt(x) + " " + cur.getString(2);
+    			   String url = cur.getInt(x) + " " + cur.getString(3);
+					
+    			   HashMap<String, String> tempHash = new HashMap<String, String>();
+    			   tempHash.put("title", title.toString());
+    			   tempHash.put("synopsis", synop.toString());
+    			   tempHash.put("year", url);
+					
+    			   myListToo.add(tempHash);
+				}
+    		   thisList = myListToo;
+				/*
 				// create object from JSON string
 				// break it down into individual items.
 				JSONObject jsobject = new JSONObject(jsonResults);
@@ -334,8 +405,10 @@ public class Layer_one extends Activity implements OnClickListener {
 				int arraySize = jso.length();
 				// TextView tv = (TextView)findViewById(R.id.textable);
 				// tv.setText(String.valueOf(arraySize));
+				// MatrixCursor cursorResult = new MatrixCursor(new String[] {"_id","Column1","Column2","Column3"});
 				int i;
 				// iterate through JSON array, adding strings to hashmap
+				
 				for (i = 0; i < arraySize; i++){
 					JSONObject current = jso.getJSONObject(i);
 					String title = current.getString("title");
@@ -364,16 +437,18 @@ public class Layer_one extends Activity implements OnClickListener {
 					stuffMap.put("title", convert.toString());
 					stuffMap.put("synopsis", convertCon.toString());
 					stuffMap.put("year", url);
-					myList.add(stuffMap);
-				}
-				thisList = myList;
 					
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    	   buildList();
+					// cursorResult.addRow(new Object[] {i, convert, convertCon, url});
+					myList.add(stuffMap);
+					
+				}
+				*/
+				
+    		   buildList();		
+			} 
+			
+    	   
        }
-    }
+    
 
 }
