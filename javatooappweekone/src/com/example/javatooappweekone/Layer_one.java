@@ -5,25 +5,20 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
-import android.text.Html;
-import android.text.Spanned;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -39,6 +34,9 @@ import com.example.methodical.SpecHandler;
 public class Layer_one extends Activity implements OnClickListener {
 	public final static String PUBLIC_KEY = "KEYFORSEARCH";
 	public final static String MY_LIST = "LISTKEY";
+	public final static String DETAIL_KEY = "DETAILKEY";
+	public final static String URL_KEY = "URLKEY";
+	public final static String TITLE_KEY = "TITLEKEY";
 	EditText et;
 	TextView tv;
 	Filer fl;
@@ -52,7 +50,7 @@ public class Layer_one extends Activity implements OnClickListener {
 	SpecHandler sh;
 	String searchResults;
 	private Button sendButton;
-	
+	Cursor cre;
 	
 	
 	
@@ -71,14 +69,45 @@ public class Layer_one extends Activity implements OnClickListener {
     	sendButton = (Button)findViewById(R.id.sendButton);
     	sendButton.setOnClickListener(this);
     	et = (EditText) findViewById(R.id.textField);
+    	lv = (ListView) findViewById(R.id.listId1);
+    	lv.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            	// String item = ((TextView)view).getText().toString();
+            	if (cre == null){
+            		ContentResolver cr = getContentResolver();
+            		Cursor cur = cr.query(ContentProviderThing.DisplayData.CONTENT_URI, ContentProviderThing.DisplayData.PROJECTION, null, null, null);
+            		cre = cur;
+            	}
+            	String item;
+            	String item2;
+            	String item3;
+            	cre.moveToFirst();
+            	if (cre.moveToPosition(position)){
+            		item = cre.getString(1);
+            		item2 = cre.getString(2);
+            		item3 = cre.getString(3);
+            		System.out.println(item);
+            		System.out.println(item2);
+            		System.out.println(item3);
+            		
+            	}
+            	
+            	// String item = cre.getInt(position) + " " + cre.getString(1);
+            	// Toast.makeText(getBaseContext(), item, Toast.LENGTH_LONG).show();
+            	
+            	// System.out.println(position);
+            	
+            }
+        });
 		// okay, it seems that somehow android remembers the contents of an EditText field on restoreInstanceState.
 		// that's just weird.
 		// et.setText(ContentProviderThing.DisplayData.CONTENT_URI.toString());
-		ContentResolver cr = getContentResolver();
+		//ContentResolver cr = getContentResolver();
 		
 		
 		// Uri path = new Uri.Builder().scheme( ContentResolver.SCHEME_CONTENT ).authority(ContentProviderThing.AUTHORITY ).appendPath( "items/" ).build();
-		Cursor cur = cr.query(ContentProviderThing.DisplayData.CONTENT_URI, ContentProviderThing.DisplayData.PROJECTION, null, null, null);
+		//Cursor cur = cr.query(ContentProviderThing.DisplayData.CONTENT_URI, ContentProviderThing.DisplayData.PROJECTION, null, null, null);
 		// Cursor cur = cr.query(path, ContentProviderThing.DisplayData.PROJECTION, null, null, null);
 		// System.out.println(ContentProviderThing.DisplayData.CONTENT_TYPE);
 		// System.out.println(ContentProviderThing.DisplayData.CONTENT_URI);
@@ -90,30 +119,30 @@ public class Layer_one extends Activity implements OnClickListener {
 		
 		// String uriString = "content://com.example.methodical.contentproviderthing/items/1";
 		// Uri uriStringInUriForm = Uri.parse(uriString);
-		Uri uriNew = Uri.parse(ContentProviderThing.DisplayData.CONTENT_URI +"/items/");
-		System.out.println(uriNew.toString());
+		//Uri uriNew = Uri.parse(ContentProviderThing.DisplayData.CONTENT_URI +"/items/");
+		//System.out.println(uriNew.toString());
 		// Cursor cur = cr.query(uriNew, ContentProviderThing.DisplayData.PROJECTION, null, null, null);
 		// Cursor cur = cr.query(ContentProviderThing.DisplayData.CONTENT_URI, ContentProviderThing.DisplayData.PROJECTION, null, null, null);
 		// cur.moveToFirst();
 		// String outputString = cur.getColumnName(0);
-		String[] outputString = cur.getColumnNames();
-		int quant = cur.getCount();
-		System.out.println("# of rows: " + quant);
+		//String[] outputString = cur.getColumnNames();
+		//int quant = cur.getCount();
+		//System.out.println("# of rows: " + quant);
 		// String secondOutput = cur.getString(cur.getColumnIndex("title"));
 		// System.out.println(secondOutput);
-		System.out.println(outputString[0] + outputString[1] + outputString[2] + outputString[3]);
+		//System.out.println(outputString[0] + outputString[1] + outputString[2] + outputString[3]);
 		// Cursor cur = cr.query(uri, ContentProviderThing.DisplayData.PROJECTION, null, null, null);
 		// 
 		// String output = cur.getString(1);
 		// System.out.println(output);
 		
 		// String data = cur.getString(cur.getCount());
-		System.out.println(cur.getColumnCount());
+		//System.out.println(cur.getColumnCount());
 		// cur.moveToPosition(1);
-		if (cur.moveToFirst()) {
-			String text = cur.getInt(0) + " " + cur.getString(1);
-			System.out.println(text);
-		}
+		//if (cur.moveToFirst()) {
+			//String text = cur.getInt(0) + " " + cur.getString(1);
+			//System.out.println(text);
+		//}
 		// String text = cur.getInt(0)
 		// System.out.println(cur.getString(0));
 	    //Cursor c = managedQuery(ContentProviderThing.ITEMS_ID, null, null, null, "name");
@@ -136,8 +165,8 @@ public class Layer_one extends Activity implements OnClickListener {
         	String newstring = fl.readFromFile(getApplicationContext(), "saveddata");
         	
         	if (newstring.length() > 1){
-        		
-        		populateList();
+        		new LoadTask().execute();
+        		// populateList();
         	}
         	
         	// activatable lines to delete files for testing purposes.
@@ -166,18 +195,44 @@ public class Layer_one extends Activity implements OnClickListener {
     public void populateList(){
     	
     	
-    	
+    	ArrayList<HashMap<String, String>> myListToo = new ArrayList<HashMap<String, String>>();
 		ArrayList<HashMap<String, String>> myList = new ArrayList<HashMap<String, String>>();
 		
 		if (thisList != null && !thisList.isEmpty()){
 			myList = thisList;
+			myListToo = thisList;
 			lv = (ListView)findViewById(R.id.listId1);
 			// construct hashmap for returns.
 			SimpleAdapter sa = new SimpleAdapter(this, myList, R.layout.list_row, new String[] { "title", "synopsis", "year"}, new int[] { R.id.titleText, R.id.synopsisText, R.id.yearText});
 			lv.setAdapter(sa);
 				
 		} else {
-			try {
+			// try {
+    	   		ContentResolver cr = getContentResolver();
+    	   		Cursor cur = cr.query(ContentProviderThing.DisplayData.CONTENT_URI, ContentProviderThing.DisplayData.PROJECTION, null, null, null);
+    	   		int quant = cur.getCount();
+    	   		int x = 0;
+    	   		for (x = 0; x < quant; x++){
+    	   			if (cur.moveToPosition(x)){
+    	   				String title = cur.getString(1);
+    	   				String synop = cur.getString(2);
+    	   				String url = cur.getString(3);
+    	   				HashMap<String, String> tempHash = new HashMap<String, String>();
+    	   				tempHash.put("title", title.toString());
+    	   				tempHash.put("synopsis", synop.toString());
+    	   				tempHash.put("year", url);
+    	   				myListToo.add(tempHash);
+    	   			}
+    			}
+    	   		cre = cur;
+    		   	thisList = myListToo;
+    		   	cre = cur;
+       		   	buildList();	
+    		   	lv = (ListView)findViewById(R.id.listId1);
+				// construct hashmap for returns.
+				SimpleAdapter sa = new SimpleAdapter(this, thisList, R.layout.list_row, new String[] { "title", "synopsis", "year"}, new int[] { R.id.titleText, R.id.synopsisText, R.id.yearText});
+				lv.setAdapter(sa);
+				/*
 				Filer fl = new Filer();
 				String jsonResults = fl.readFromFile(getApplicationContext(), "searchresults");
 				// System.out.println(jsonResults);
@@ -241,7 +296,7 @@ public class Layer_one extends Activity implements OnClickListener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+			*/
 		}
 		
 		
@@ -367,30 +422,36 @@ public class Layer_one extends Activity implements OnClickListener {
        @Override
        protected void onPostExecute(Void result){
     	   // try {
-    		   
     		   // ArrayList<HashMap<String, String>> myList = new ArrayList<HashMap<String, String>>();
-    		   ArrayList<HashMap<String, String>> myListToo = new ArrayList<HashMap<String, String>>();
     		   // Filer fl = new Filer();
     		   // String jsonResults = fl.readFromFile(getApplicationContext(), "searchresults");
     		   // System.out.println(jsonResults);
-				
-    		   ContentResolver cr = getContentResolver();
-    		   Cursor cur = cr.query(ContentProviderThing.DisplayData.CONTENT_URI, ContentProviderThing.DisplayData.PROJECTION, null, null, null);
-    		   int quant = cur.getCount();
-    		   int x = 0;
-    		   for (x = 0; x < quant; x++){
-    			   String title = cur.getInt(x) + " " + cur.getString(1);
-    			   String synop = cur.getInt(x) + " " + cur.getString(2);
-    			   String url = cur.getInt(x) + " " + cur.getString(3);
-					
-    			   HashMap<String, String> tempHash = new HashMap<String, String>();
-    			   tempHash.put("title", title.toString());
-    			   tempHash.put("synopsis", synop.toString());
-    			   tempHash.put("year", url);
-					
-    			   myListToo.add(tempHash);
-				}
+    	   		ArrayList<HashMap<String, String>> myListToo = new ArrayList<HashMap<String, String>>();
+    	   		ContentResolver cr = getContentResolver();
+    	   		Cursor cur = cr.query(ContentProviderThing.DisplayData.CONTENT_URI, ContentProviderThing.DisplayData.PROJECTION, null, null, null);
+    	   		int quant = cur.getCount();
+    	   		int x = 0;
+    	   		for (x = 0; x < quant; x++){
+    	   			if (cur.moveToPosition(x)){
+    	   				String title = cur.getString(1);
+    	   				String synop = cur.getString(2);
+    	   				String url = cur.getString(3);
+    	   				HashMap<String, String> tempHash = new HashMap<String, String>();
+    	   				tempHash.put("title", title.toString());
+    	   				tempHash.put("synopsis", synop.toString());
+    	   				tempHash.put("year", url);
+    	   				myListToo.add(tempHash);
+    	   			}
+    			}
+    		   cre = cur;
     		   thisList = myListToo;
+       		   cre = cur;
+    		   buildList();
+    		   	lv = (ListView)findViewById(R.id.listId1);
+				// construct hashmap for returns.
+				SimpleAdapter sa = new SimpleAdapter(getApplicationContext(), myListToo, R.layout.list_row, new String[] { "title", "synopsis", "year"}, new int[] { R.id.titleText, R.id.synopsisText, R.id.yearText});
+						// new SimpleAdapter(this, thisList, R.layout.list_row, new String[] { "title", "synopsis", "year"}, new int[] { R.id.titleText, R.id.synopsisText, R.id.yearText});
+				lv.setAdapter(sa);
 				/*
 				// create object from JSON string
 				// break it down into individual items.
@@ -443,12 +504,19 @@ public class Layer_one extends Activity implements OnClickListener {
 					
 				}
 				*/
-				
-    		   buildList();		
+ 	
 			} 
 			
     	   
        }
+    public void openNewActivity(View view, String title, String detail, String url) {
+        // Do something in response to button
+    	Intent intent = new Intent(this, DetailActivity.class);
+    	intent.putExtra(TITLE_KEY, title);
+    	intent.putExtra(DETAIL_KEY, detail);
+    	intent.putExtra(URL_KEY, url);
+    	startActivity(intent);
+    }
     
 
 }

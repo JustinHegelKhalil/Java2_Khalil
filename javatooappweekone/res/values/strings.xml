@@ -8,5 +8,7 @@
     <string name="search_prompt">enter search text</string>
     <string name="send_button_text">search</string>
     <string name="title_activity_show_list_view">ShowListViewActivity</string>
-	<string name="loading">loading</string>
+    <string name="loading">loading</string>
+    <string name="title_activity_detail">DetailActivity</string>
+
 </resources>
