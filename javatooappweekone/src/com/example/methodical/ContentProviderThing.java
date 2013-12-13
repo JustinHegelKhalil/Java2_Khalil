@@ -132,6 +132,7 @@ public class ContentProviderThing extends ContentProvider {
 						
 					String url = current.getString("year");
 					url = "year:" + url + " ";
+					
 					// some returned items lack certain elements. 
 					// so I check for items that are not in every return
 					if (current.has("critics_consensus")){
@@ -145,6 +146,15 @@ public class ContentProviderThing extends ContentProvider {
 							// I'm really getting tired of the incredibly small variable names.
 							// rd, pl, osw, pl, rl, it's just bizarrely cryptic.
 						}
+					}
+					if (current.has("posters")){
+						JSONObject jsa4P = current.getJSONObject("posters");
+						String str = jsa4P.getString("detailed");
+						url = str;
+					}
+					if (current.has("links")){
+						String alternate = current.getJSONObject("links").getString("alternate");
+						fl.writeToFile(getContext(), alternate, title);
 					}
 					HashMap<String, String> stuffMap = new HashMap<String, String>();
 					stuffMap.put("title", convert.toString());
@@ -187,7 +197,7 @@ public class ContentProviderThing extends ContentProvider {
 			// return DisplayData.CONTENT_ITEM_TYPE;
 		}
 		
-		// TODO Auto-generated method stub
+		// tracking down problems in these things is hard... which is why there are so many system-outs.
 		System.out.println("Query running at end of query, right before result is returned: ");
 		return result;
 		

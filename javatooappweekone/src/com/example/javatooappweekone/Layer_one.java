@@ -57,6 +57,7 @@ public class Layer_one extends Activity implements OnClickListener {
 	
 	
 	
+	
     // There's a variable definition a few lines down that Eclipse doesn't like.
     // Research says that there's no solid way around it other than suppressing it, so that's what I do here.
     @SuppressWarnings("unchecked")
@@ -90,7 +91,9 @@ public class Layer_one extends Activity implements OnClickListener {
             		System.out.println(item);
             		System.out.println(item2);
             		System.out.println(item3);
-            		
+            		//View view = (View) f
+            		View thisone = (View)findViewById(R.id.thisView);
+            		openNewActivity(thisone, item, item2, item3);
             	}
             	
             	// String item = cre.getInt(position) + " " + cre.getString(1);
@@ -162,11 +165,11 @@ public class Layer_one extends Activity implements OnClickListener {
         	fl = new Filer();
         	// get string containing saveddata file contents.
             // if there are contents, it means the app has been run before.
-        	String newstring = fl.readFromFile(getApplicationContext(), "saveddata");
+        	String newstring = fl.readFromFile(getApplicationContext(), "searchresults");
         	
         	if (newstring.length() > 1){
-        		new LoadTask().execute();
-        		// populateList();
+        		// new LoadTask().execute();
+        		populateList();
         	}
         	
         	// activatable lines to delete files for testing purposes.

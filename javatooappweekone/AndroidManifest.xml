@@ -42,6 +42,14 @@
             android:parentActivityName="com.example.javatooappweekone.Layer_one" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
+                android:label="@string/title_main_activity"
+                android:value="com.example.javatooappweekone.Layer_one" />
+        </activity>
+        <activity
+            android:name="com.example.javatooappweekone.WebViewActivity"
+            android:label="@string/title_activity_web_view" android:parentActivityName="@string/title_main_activity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.javatooappweekone.Layer_one" />
         </activity>
     </application>

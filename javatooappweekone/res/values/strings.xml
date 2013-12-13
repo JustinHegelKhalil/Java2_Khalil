@@ -9,6 +9,10 @@
     <string name="send_button_text">search</string>
     <string name="title_activity_show_list_view">ShowListViewActivity</string>
     <string name="loading">loading</string>
+    <string name="title_main_activity">Layer_one</string>
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="description">poster thumbnail</string>
+    <string name="openwebview">view in browser</string>
+    <string name="title_activity_web_view">WebViewActivity</string>
 
 </resources>
