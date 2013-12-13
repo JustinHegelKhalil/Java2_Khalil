@@ -125,7 +125,7 @@ public class ContentProviderThing extends ContentProvider {
 					System.out.println("is this thing working?");
 					JSONObject current = recordArray.getJSONObject(i);
 					String title = current.getString("title");
-					title = "Title: " + title;
+					// title = "Title: " + title;
 					Spanned convert = Html.fromHtml(title);
 					String contentSnip = current.getString("synopsis");
 					Spanned convertCon = Html.fromHtml(contentSnip);
@@ -153,8 +153,8 @@ public class ContentProviderThing extends ContentProvider {
 						url = str;
 					}
 					if (current.has("links")){
-						String alternate = current.getJSONObject("links").getString("alternate");
-						fl.writeToFile(getContext(), alternate, title);
+						//String alternate = current.getJSONObject("links").getString("alternate");
+						//fl.writeToFile(getContext(), alternate, title);
 					}
 					HashMap<String, String> stuffMap = new HashMap<String, String>();
 					stuffMap.put("title", convert.toString());

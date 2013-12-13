@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -20,8 +21,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.example.methodical.Filer;
 
 public class DetailActivity extends Activity {
 
@@ -63,11 +62,11 @@ public class DetailActivity extends Activity {
 			public void onClick(View v) {
 				Intent intent = getIntent();
 				View thisone = (View)findViewById(R.id.secondView);
-				Filer fl = new Filer();
-				String title = intent.getStringExtra(Layer_one.TITLE_KEY);
-				String linkURL = fl.readFromFile(getApplicationContext(), title);
+				// Filer fl = new Filer();
+				String url = intent.getStringExtra(Layer_one.URL_KEY);
+				// String linkURL = fl.readFromFile(getApplicationContext(), title);
 				
-				openNewActivity(thisone, linkURL);
+				openNewActivity(thisone, url);
 				// TODO Auto-generated method stub
 				
 			}
@@ -143,9 +142,16 @@ public class DetailActivity extends Activity {
 	    	   
 	       }
 	public void openNewActivity(View view, String url) {
+		
+		// String p1 = "http://www.google.com/search?as_q=";
+		// String p2 = url.replace(" ", "+");
+		// String combiner = p1+p2;
+		// String testingString = "http://www.google.com";
         // Do something in response to button
-    	Intent intent = new Intent(this, WebViewActivity.class);
-    	intent.putExtra(WEBVIEW_KEY, url);
+    	// Intent intent = new Intent(this, WebViewActivity.class);
+    	Intent intent = new Intent(Intent.ACTION_VIEW,
+				Uri.parse(url));
+    	// intent.putExtra(WEBVIEW_KEY, url);
     	startActivity(intent);
     }
 

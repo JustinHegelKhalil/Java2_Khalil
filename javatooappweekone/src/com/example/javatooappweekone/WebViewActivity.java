@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 public class WebViewActivity extends Activity {
 
 	TextView tv;
+	// private WebView webView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +26,31 @@ public class WebViewActivity extends Activity {
 		tv = (TextView)findViewById(R.id.webURL);
 		tv.setText(title);
 		setupActionBar();
+		String p1 = "http://www.google.com/search?as_q=";
+		String p2 = title.replace(" ", "+");
+		// webView = (WebView) findViewById(R.id.webViewThing);
+		//webView.setWebViewClient(new newWebViewClient());
+		//WebSettings webSettings = webView.getSettings();
+		
+		//webSettings.setAllowContentAccess(true);
+		//webSettings.setAllowUniversalAccessFromFileURLs(true);
+		// webView.getSettings().setLoadWithOverviewMode(true);
+	    // webView.getSettings().setUseWideViewPort(true); 
+		//webView = new WebView(getApplicationContext());
+		
+		WebView webView = new WebView(this);
+		// WebSettings webSettings = webView.getSettings();
+		// webSettings.setJavaScriptEnabled(true);
+		// webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+		webView.setBackgroundColor(0x00000000);
+		webView.setWebViewClient(new newWebViewClient());
+		
+		webView.loadUrl(p1+p2);
+
+		setContentView(webView);
+		// System.out.println(title);
+		
+		
 	}
 
 	/**
@@ -57,5 +85,20 @@ public class WebViewActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
+	
+	
+	private class newWebViewClient extends WebViewClient {
+	    @Override
+	    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+	        
+	    	view.loadUrl(url);
+	        // view.loadUrl(url);
+	        //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+	        //startActivity(intent);
+	        return false;
+	    }
+	    
+	    
+	
+	}
 }
