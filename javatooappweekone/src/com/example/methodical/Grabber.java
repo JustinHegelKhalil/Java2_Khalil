@@ -53,6 +53,7 @@ public class Grabber {
 							InputStream herein;
 							herein = entity.getContent();
 							String result = getStringFromStream(herein);
+							System.out.println(result);
 							// put search results in 'search-results' file.
 							Filer fl = new Filer();
 							fl.writeToFile(context, result, "searchresults");

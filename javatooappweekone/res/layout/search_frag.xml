@@ -9,9 +9,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     
-    <!-- <fragment android:name="com.example.javatooappweekone.ListFraggle"
-        android:id="@+id/list_frag_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    -->
+  
 </LinearLayout>

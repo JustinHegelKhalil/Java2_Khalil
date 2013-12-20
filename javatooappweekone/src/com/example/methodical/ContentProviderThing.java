@@ -1,6 +1,6 @@
 package com.example.methodical;
 //Justin Khalil formerly of OCD, latterly of FSU
-//Java-II Week Two
+//Java-II Week Three
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -99,9 +99,9 @@ public class ContentProviderThing extends ContentProvider {
 		MatrixCursor result = new MatrixCursor(DisplayData.PROJECTION);
 		Filer fl = new Filer();
 		String JSONString = fl.readFromFile(getContext(), "searchresults");
-		JSONObject job = null;
+		JSONObject job;
 		JSONArray recordArray = null;
-		
+		System.out.println(JSONString);
 		try {
 			// System.out.println("Query still running: 1");
 			job = new JSONObject(JSONString);
@@ -112,7 +112,7 @@ public class ContentProviderThing extends ContentProvider {
 		}
 		
 		if (recordArray == null){
-			System.out.println("result == null");
+			// System.out.println("result == null");
 			return result;
 			
 		}

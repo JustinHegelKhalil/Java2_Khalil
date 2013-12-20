@@ -1,6 +1,6 @@
 package com.example.javatooappweekone;
 //Justin Khalil formerly of OCD, latterly of FSU
-//Java-II Week Two
+//Java-II Week Three
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;

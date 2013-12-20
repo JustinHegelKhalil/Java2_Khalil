@@ -1,6 +1,6 @@
 package com.example.javatooappweekone;
 //Justin Khalil formerly of OCD, latterly of FSU
-//Java-II Week Two
+//Java-II Week Three
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
