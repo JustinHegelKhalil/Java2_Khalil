@@ -8,7 +8,6 @@ import android.app.IntentService;
 import android.content.Intent;
 
 import com.example.javatooappweekone.SearchFraggle.ResponseReceiver;
-import com.example.methodical.Filer;
 import com.example.methodical.Grabber;
 
 public class CycleService extends IntentService {

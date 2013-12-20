@@ -85,8 +85,10 @@ public class DetailFraggle extends Fragment implements Layer_one.TriggerListener
 				// Looking back on this, I did this in a really weird way. But it seems to work fine.
 				// So maybe I'll try doing everything in this weird way to see if it is better, worse, or qualitatively indistinct
 				// from the usual way.
-				Intent intent = getActivity().getIntent();
-				String title = intent.getStringExtra(Layer_one.TITLE_KEY);
+				//Intent intent = getActivity().getIntent();
+				// String title = intent.getStringExtra(Layer_one.TITLE_KEY);
+				tv1 = (TextView)view.findViewById(R.id.titleText);
+				String title = tv1.getText().toString();
 				openNewActivity(view, title);
 			}
 		});
@@ -141,9 +143,11 @@ public class DetailFraggle extends Fragment implements Layer_one.TriggerListener
 				combiner = p1+p2;
 			} catch (Exception e1) {
 				String p1 = "http://www.google.com/search?as_q=";
+				String partTwo = "part two";
+				// String partTwo = url;
 				//int point = url.indexOf(" ");
 				//String p2 = url.substring(0, point);
-				combiner = p1;
+				combiner = p1+partTwo;
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}

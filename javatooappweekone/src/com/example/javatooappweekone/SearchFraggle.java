@@ -50,6 +50,9 @@ public class SearchFraggle extends Fragment {
 	Context context;
 	Cursor cre;
 	Filer fl;
+	String currentTitle;
+	String currentDetails;
+	String currentURL;
 	private ResponseReceiver receiver;
 	private DetailListener detailListener;
 	public interface DetailListener{
@@ -236,6 +239,9 @@ public class SearchFraggle extends Fragment {
 	}
 	
 	public void openNewActivity(View view, String title, String detail, String url) {
+		currentTitle = title;
+		currentDetails = detail;
+		currentURL = url;
         // Do something in response to button
 		DetailFraggle fragment = (DetailFraggle) getFragmentManager().findFragmentById(R.id.detail_frag_id);
 			if (fragment == null || ! fragment.isInLayout()) {
