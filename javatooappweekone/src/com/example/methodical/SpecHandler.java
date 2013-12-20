@@ -1,5 +1,6 @@
 package com.example.methodical;
-
+//Justin Khalil formerly of OCD, latterly of FSU
+//Java-II Week Two
 import java.util.ArrayList;
 import java.util.HashMap;
 

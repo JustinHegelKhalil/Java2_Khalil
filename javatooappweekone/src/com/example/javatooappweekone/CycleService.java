@@ -1,23 +1,14 @@
 package com.example.javatooappweekone;
-
+//Justin Khalil formerly of OCD, latterly of FSU
+//Java-II Week Two
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.app.Activity;
 import android.app.IntentService;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
-import android.text.Html;
-import android.text.Spanned;
 
-import com.example.methodical.Filer;
+import com.example.javatooappweekone.SearchFraggle.ResponseReceiver;
+import com.example.methodical.Grabber;
 // import com.example.javatooappweekone.Layer_one;
 
 public class CycleService extends IntentService {
@@ -25,6 +16,8 @@ public class CycleService extends IntentService {
 	static ArrayList<HashMap<String, String>> thisList;
 	
 	public final static String RESULT_COOL = "loader";
+	public final static String OUT_MESSAGE = "output_message";
+	public final static String IN_MESSAGE = "input_message";
 	
 	public CycleService(){
 		super("CycleService");
@@ -37,15 +30,20 @@ public class CycleService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent){
 		
-		Bundle extras = intent.getExtras();
-		Messenger msgr = (Messenger) extras.get(RESULT_COOL);
+		// Bundle extras = intent.getExtras();
+		String msg = intent.getStringExtra(IN_MESSAGE);
 		
-		Filer fl = new Filer();
-		String jsonResults = fl.readFromFile(getApplicationContext(), "searchresults");
+		// Messenger msgr = (Messenger) extras.get(OUT_MESSAGE);
+		Grabber gr = new Grabber();
+		String objectString = gr.grabData(getApplicationContext(), msg);
+		
+		// Filer fl = new Filer();
+		// String jsonResults = fl.readFromFile(getApplicationContext(), "searchresults");
 		// System.out.println(jsonResults);
 			
-		ArrayList<HashMap<String, String>> myList = new ArrayList<HashMap<String, String>>();
+		// ArrayList<HashMap<String, String>> myList = new ArrayList<HashMap<String, String>>();
 		// construct hashmap for returns.
+		/*
 		try {
 			JSONObject jsobject = new JSONObject(jsonResults);
 			JSONArray jso = jsobject.getJSONArray("movies");
@@ -86,18 +84,18 @@ public class CycleService extends IntentService {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
-			
-	Message message = Message.obtain();
-	message.arg1 = Activity.RESULT_OK;
-	message.obj = myList;
+				*/
+		Intent broadcastIntent = new Intent();
+		broadcastIntent.setAction(ResponseReceiver.RESPONSE_EVENT);
+		broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+		broadcastIntent.putExtra(OUT_MESSAGE, objectString);
+		sendBroadcast(broadcastIntent);
+		
+	// Message message = Message.obtain();
+	// message.arg1 = Activity.RESULT_OK;
+	// message.obj = objectString;
 	
-	try {
-		msgr.send(message);
-	} catch (RemoteException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+	
 	
 	// thisList = myList;
 	// Layer_one.setContent(thisList);

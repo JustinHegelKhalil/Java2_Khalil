@@ -21,9 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/search_prompt" />
-	
     <ListView 
-            android:id="@+id/listIdOne"
+            android:id="@+id/listview_in_fragment"
         	android:layout_width="match_parent"
         	android:layout_height="match_parent"
         	android:layout_gravity="left"
@@ -32,6 +31,5 @@
         	android:drawSelectorOnTop="false">
         
     </ListView>
-
+	
 </LinearLayout>
-

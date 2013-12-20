@@ -1,5 +1,6 @@
 package com.example.methodical;
-
+//Justin Khalil formerly of OCD, latterly of FSU
+//Java-II Week Two
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -63,7 +64,7 @@ public class ContentProviderThing extends ContentProvider {
 
 	@Override
 	public String getType(Uri uri) {
-		System.out.println("onCreate");
+		// System.out.println("onCreate");
 		switch (uriMatcher.match(uri)) {
 		case ITEMS:
 			return DisplayData.CONTENT_TYPE;
@@ -93,8 +94,8 @@ public class ContentProviderThing extends ContentProvider {
 		
 		
 		
-		System.out.println("Query running");
-		System.out.println(uri.toString());
+		// System.out.println("Query running");
+		// System.out.println(uri.toString());
 		MatrixCursor result = new MatrixCursor(DisplayData.PROJECTION);
 		Filer fl = new Filer();
 		String JSONString = fl.readFromFile(getContext(), "searchresults");
@@ -102,7 +103,7 @@ public class ContentProviderThing extends ContentProvider {
 		JSONArray recordArray = null;
 		
 		try {
-			System.out.println("Query still running: 1");
+			// System.out.println("Query still running: 1");
 			job = new JSONObject(JSONString);
 			recordArray = job.getJSONArray("movies");
 		} catch (JSONException e) {
@@ -115,14 +116,14 @@ public class ContentProviderThing extends ContentProvider {
 			return result;
 			
 		}
-		System.out.println("Query still running: 2");
+		// System.out.println("Query still running: 2");
 		switch (uriMatcher.match(uri)) {
 		case ITEMS:
-			System.out.println("case ITEMS: running");
+			// System.out.println("case ITEMS: running");
 			int i = 0;
 			for (i = 0; i < recordArray.length(); i++){
 				try {
-					System.out.println("is this thing working?");
+					// System.out.println("is this thing working?");
 					JSONObject current = recordArray.getJSONObject(i);
 					String title = current.getString("title");
 					// title = "Title: " + title;
@@ -169,7 +170,7 @@ public class ContentProviderThing extends ContentProvider {
 			
 			// return DisplayData.CONTENT_TYPE;
 		case ITEMS_ID:
-			System.out.println("Query still running: 2");
+			// System.out.println("Query still running: 2");
 			String itemID = uri.getLastPathSegment();
 			Log.e("QueryId", itemID);
 			
@@ -198,7 +199,7 @@ public class ContentProviderThing extends ContentProvider {
 		}
 		
 		// tracking down problems in these things is hard... which is why there are so many system-outs.
-		System.out.println("Query running at end of query, right before result is returned: ");
+		// System.out.println("Query running at end of query, right before result is returned: ");
 		return result;
 		
 	}

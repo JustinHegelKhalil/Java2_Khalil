@@ -4,6 +4,9 @@
     <string name="app_name">javatooappweekone</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">greetings from planet erf!</string>
+    <string name="detail_line_one">Click on an item in the</string>
+    <string name="detail_line_two">list to the left to see</string>
+    <string name="detail_line_three">its details here</string>
     <string name="app_title">MovieMeister</string>
     <string name="search_prompt">search for info on movies</string>
     <string name="send_button_text">search</string>

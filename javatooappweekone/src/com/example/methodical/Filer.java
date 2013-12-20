@@ -1,6 +1,6 @@
 package com.example.methodical;
-// Justin Khalil formerly of OCD, latterly of FSU
-// Java-II Week One
+//Justin Khalil formerly of OCD, latterly of FSU
+//Java-II Week Two
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -1,6 +1,6 @@
 package com.example.methodical;
 //Justin Khalil formerly of OCD, latterly of FSU
-//Java-II Week One
+//Java-II Week Two
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +30,6 @@ public class Grabber {
 		String returnString = "";
 		Thread one = new Thread();
 		one.start();
-		
 		while (one.isAlive()) {
             try {
 				one.join(2000);
@@ -54,20 +53,15 @@ public class Grabber {
 							InputStream herein;
 							herein = entity.getContent();
 							String result = getStringFromStream(herein);
-							// System.out.println(result);
+							// put search results in 'search-results' file.
 							Filer fl = new Filer();
 							fl.writeToFile(context, result, "searchresults");
 							String finito = "";
 							try {
 								JSONObject json = new JSONObject(result);
-								// vestigial elements from earlier versions.
-								//JSONObject jso = json.getJSONObject("responseData");
 								JSONArray countOne = json.getJSONArray("movies");
-								// JSONObject jso = json.getJSONObject("value");
-								// JSONArray countOne = jso.getJSONArray("items");
 								fl.writeToFile(context, countOne.toString(), "arraycontents");
 							} catch (Exception e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 							returnString = finito;
@@ -89,23 +83,15 @@ public class Grabber {
 				e.printStackTrace();
 			}
 			
-			} 
-		
-		
-		
-	
+		} 
 		try {
 			one.join();
-			
 			return returnString;
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
 		}
-		
 		return returnString;
-		
 	}
 
 	private static String getStringFromStream(InputStream streamer){
